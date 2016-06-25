@@ -3,20 +3,10 @@
  */
 
 import React from 'react';
+import Relay from 'react-relay';
 import TodoItem from './TodoItem';
 import { FABButton, Icon, Grid, Cell, Textfield } from 'react-mdl';
-import AddTodoMutation from "../../mutations/AddTodoMutation";
-
-function getTodosBlock(viewer) {
-  return viewer.todos.edges.map((edge) => (
-    <Cell col={12} key={edge.node.id}>
-      <TodoItem
-        todo={edge.node}
-        viewer={viewer}
-      />
-    </Cell>)
-  );
-}
+import AddTodoMutation from './../../mutations/AddTodoMutation';
 
 /**
  * TodoList
@@ -47,8 +37,22 @@ class TodoComponent extends React.Component {
     this.setState({ todoText: e.target.value });
   }
 
+  renderTodos = () => {
+    return this.props.viewer.todos.edges.map((edge) => {
+      console.log(edge.node);
+      return (
+        <Cell col={12} key={edge.node.id}>
+          <TodoItem
+            key={edge.node.id}
+            todo={edge.node}
+            viewer={this.props.viewer}
+          />
+        </Cell>);
+      }
+    );
+  };
+
   render() {
-    const todosBlock = getTodosBlock(this.props.viewer);
     return (
       <div>
         <h2>Todo Main container component</h2>
@@ -69,10 +73,30 @@ class TodoComponent extends React.Component {
           </Cell>
         </Grid>
 
-        <Grid>{todosBlock}</Grid>
+        <Grid>
+          {this.renderTodos()}
+        </Grid>
       </div>
     );
   }
 }
 
-export default TodoComponent;
+export default Relay.createContainer(TodoComponent, {
+    fragments: {
+        viewer: () => Relay.QL`
+            fragment on User {
+                todos(first: 10) {
+                    edges {
+                        node {
+                            id,
+                            text,
+                            complete
+                        }
+                    }
+                },
+                ${AddTodoMutation.getFragment('viewer')}
+            }
+        `
+    }
+});
+

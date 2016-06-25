@@ -3,11 +3,24 @@
  */
 
 import React from 'react';
-import { Checkbox } from 'react-mdl';
+import Relay from 'react-relay';
+import { Checkbox, FABButton, Icon } from 'react-mdl';
+import RemoveTodoMutation from './../../mutations/RemoveTodoMutation'
 
-class TodoItem extends React.Component {
+class TodoItemComponent extends React.Component {
   static propTypes = {
     todo: React.PropTypes.object
+  };
+
+  onUpdateClick = () => {
+    console.log(this.props.todo.id);
+  };
+
+  onDeleteClick = () => {
+    console.log(this.props.todo.id);
+    this.props.relay.commitUpdate(
+      new RemoveTodoMutation({ todo: this.props.todo, text: this.props.text, viewer: this.props.viewer })
+    )
   };
 
   render() {
@@ -17,9 +30,31 @@ class TodoItem extends React.Component {
       <div>
         <b>{id}</b>
         <Checkbox label={text} checked={isCompleted} disabled />
+        <FABButton name colored ripple onClick={this.onUpdateClick} >
+          <Icon name='update' />
+        </FABButton>
+        <FABButton name colored ripple onClick={this.onDeleteClick} >
+          <Icon name='delete' />
+        </FABButton>
       </div>
     );
   }
 }
 
-export default TodoItem;
+export default Relay.createContainer(TodoItemComponent, {
+  fragments: {
+    todo: () => Relay.QL`
+      fragment on Todo {
+        complete,
+        id,
+        text,
+        ${RemoveTodoMutation.getFragment('todo')}
+      }
+    `,
+    viewer: () => Relay.QL`
+      fragment on User {
+        ${RemoveTodoMutation.getFragment('todo')}
+      }
+    `
+  }
+});
