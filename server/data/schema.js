@@ -238,7 +238,7 @@ const renameTodoMutation = mutationWithClientMutationId({
   }
 });
 
-const removeTodoMutatio = mutationWithClientMutationId({
+const removeTodoMutation = mutationWithClientMutationId({
   name: 'RemoveTodo',
   inputFields: {
     id: { type: new GraphQLNonNull(GraphQLID) }
@@ -270,7 +270,7 @@ const mutationType = new GraphQLObjectType({
     addTodo: addTodoMutation,
     changeTodoStatus: changeStatusMutation,
     renameTodo: renameTodoMutation,
-    removeTodo: removeTodoMutatio
+    removeTodo: removeTodoMutation
   })
 });
 

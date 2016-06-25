@@ -4,6 +4,7 @@
 
 import Relay from 'react-relay';
 import TodoComponent from './TodoComponent';
+import AddTodoMutation from './../../mutations/AddTodoMutation';
 
 export default Relay.createContainer(TodoComponent, {
   fragments: {
@@ -17,7 +18,8 @@ export default Relay.createContainer(TodoComponent, {
               complete
             }
           }
-        }
+        },
+        ${AddTodoMutation.getFragment('viewer')}
       }
     `
   }

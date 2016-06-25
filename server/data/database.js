@@ -83,9 +83,9 @@ function removeTodo(id) {
 /**
  * Add mock data
  */
-addTodo('Say hello');
-addTodo('Say goodbye');
-addTodo('Dance');
+addTodo('Say hello 123');
+addTodo('Say goodbye 123');
+addTodo('Dance 123');
 
 export {
   User,
