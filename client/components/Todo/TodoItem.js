@@ -17,7 +17,6 @@ class TodoItemComponent extends React.Component {
   };
 
   onDeleteClick = () => {
-    console.log(this.props.todo.id);
     this.props.relay.commitUpdate(
       new RemoveTodoMutation({ todo: this.props.todo, text: this.props.text, viewer: this.props.viewer })
     )
@@ -30,7 +29,7 @@ class TodoItemComponent extends React.Component {
       <div>
         <b>{id}</b>
         <Checkbox label={text} checked={isCompleted} disabled />
-        <FABButton name colored ripple onClick={this.onUpdateClick} >
+        <FABButton name colored ripple onClick={() => this.props.onStartUpdating(this.props.todo) } >
           <Icon name='update' />
         </FABButton>
         <FABButton name colored ripple onClick={this.onDeleteClick} >
