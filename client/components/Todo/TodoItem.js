@@ -4,12 +4,19 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import { Checkbox, FABButton, Icon } from 'react-mdl';
 import RemoveTodoMutation from './../../mutations/RemoveTodoMutation'
+
+import { ListItem } from 'material-ui/List';
+import Checkbox from 'material-ui/Checkbox';
 
 class TodoItemComponent extends React.Component {
   static propTypes = {
     todo: React.PropTypes.object
+  };
+
+  static getInitialState = function () {
+    console.log('getInitialState');
+    return this.props;
   };
 
   onUpdateClick = () => {
@@ -26,17 +33,25 @@ class TodoItemComponent extends React.Component {
     const { id, text, isCompleted } = this.props.todo;
 
     return (
-      <div>
-        <b>{id}</b>
-        <Checkbox label={text} checked={isCompleted} disabled />
-        <FABButton name colored ripple onClick={() => this.props.onStartUpdating(this.props.todo) } >
-          <Icon name='update' />
-        </FABButton>
-        <FABButton name colored ripple onClick={this.onDeleteClick} >
-          <Icon name='delete' />
-        </FABButton>
-      </div>
+      <ListItem
+        leftCheckbox={<Checkbox checked={isCompleted} onClick={this.props.onToggleIsComplete} />}
+        primaryText={text}
+        secondaryText={id}
+      />
     );
+
+    // return (
+    //   <div>
+    //     <b>{id}</b>
+    //     <Checkbox label={text} checked={isCompleted} disabled />
+    //     <FABButton name colored ripple onClick={() => this.props.onStartUpdating(this.props.todo) } >
+    //       <Icon name='update' />
+    //     </FABButton>
+    //     <FABButton name colored ripple onClick={this.onDeleteClick} >
+    //       <Icon name='delete' />
+    //     </FABButton>
+    //   </div>
+    // );
   }
 }
 

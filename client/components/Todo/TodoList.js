@@ -5,8 +5,19 @@
 import React from 'react';
 import Relay from 'react-relay';
 import TodoItem from './TodoItem';
-import { FABButton, Icon, Grid, Cell, Textfield } from 'react-mdl';
-import AddTodoMutation from './../../mutations/AddTodoMutation'; import RenameTodoMutation from "../../mutations/RenameTodoMutation";
+import { Textfield } from 'react-mdl';
+
+// Material-UI
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import { List } from 'material-ui/List';
+import Subheader from 'material-ui/Subheader';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import ContentUpdate from 'material-ui/svg-icons/content/save';
+
+// Mutations
+import AddTodoMutation from './../../mutations/AddTodoMutation';
+import RenameTodoMutation from "../../mutations/RenameTodoMutation";
+import ChangeTodoStatusMutation from "../../mutations/ChangeTodoStatusMutation";
 
 /**
  * TodoList
@@ -51,31 +62,44 @@ class TodoComponent extends React.Component {
     )
   };
 
+  onToggleIsComplete = (e, node) => {
+    console.log(node);
+    this.props.relay.commitUpdate(
+      new ChangeTodoStatusMutation({
+        id: node.id,
+        complete: node.complete,
+        todo: node,
+        viewer: this.props.viewer
+      })
+    );
+    // console.log(node);
+    // node.isComplete = !node.isComplete;
+  };
+
   renderTodos = () => {
     return this.props.viewer.todos.edges.map((edge) => {
       return (
-        <Cell col={12} key={edge.node.id}>
-          <TodoItem
-            key={edge.node.id}
-            todo={edge.node}
-            viewer={this.props.viewer}
-            onStartUpdating={this.onStartUpdating}
-          />
-        </Cell>);
-      }
-    );
+        <TodoItem
+          key={edge.node.id}
+          todo={edge.node}
+          viewer={this.props.viewer}
+          onStartUpdating={this.onStartUpdating}
+          onToggleIsComplete={e => this.onToggleIsComplete(e, edge.node)}
+        />
+      );
+    });
   };
 
   render() {
     var addButton = (
-      <FABButton colored ripple onClick={this.addTodoClicked}>
-        <Icon name='add' />
-      </FABButton>
+      <FloatingActionButton onClick={this.addTodoClicked}>
+        <ContentAdd />
+      </FloatingActionButton>
     );
     var updateButton = (
-      <FABButton colored ripple onClick={this.onConfirmUpdate}>
-        <Icon name='update' />
-      </FABButton>
+      <FloatingActionButton onClick={this.onConfirmUpdate}>
+        <ContentUpdate />
+      </FloatingActionButton>
     );
     var button = this.state.isUpdating ? updateButton : addButton;
 
@@ -83,23 +107,20 @@ class TodoComponent extends React.Component {
       <div>
         <h2>{ this.state.isUpdating ? 'Updating existing task' : 'Add new todo task'}</h2>
 
-        <Grid>
-          <Cell col={2}>
-            <Textfield
-              onChange={ this.onTextChanged }
-              label={ this.state.todoLabel }
-              value={ this.state.todoText }
-              style={{ width: '200px' }}
-            />
-          </Cell>
-          <Cell col={1}>
-            {button}
-          </Cell>
-        </Grid>
+        <Textfield
+          onChange={ this.onTextChanged }
+          label={ this.state.todoLabel }
+          value={ this.state.todoText }
+          style={{ width: '200px' }}
+        />
+        {button}
 
-        <Grid>
-          {this.renderTodos()}
-        </Grid>
+        <div>
+          <List>
+            <Subheader>Todos</Subheader>
+            {this.renderTodos()}
+          </List>
+        </div>
       </div>
     );
   }
@@ -112,7 +133,8 @@ export default Relay.createContainer(TodoComponent, {
               id,
               complete,
               text,
-              ${RenameTodoMutation.getFragment('todo')}
+              ${RenameTodoMutation.getFragment('todo')},
+              ${ChangeTodoStatusMutation.getFragment('todo')}
           }  
         `,
         viewer: () => Relay.QL`
@@ -127,6 +149,7 @@ export default Relay.createContainer(TodoComponent, {
                     }
                 },
                 ${AddTodoMutation.getFragment('viewer')},
+                ${ChangeTodoStatusMutation.getFragment('viewer')}
             }
         `
     }
