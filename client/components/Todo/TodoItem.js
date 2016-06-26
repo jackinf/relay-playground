@@ -51,6 +51,7 @@ class TodoItemComponent extends React.Component {
 
     const rightIconMenu = (
       <IconMenu iconButtonElement={iconButtonElement}>
+        <MenuItem onClick={() => this.props.onStartUpdating(this.props.todo) }>Update</MenuItem>
         <MenuItem onClick={this.onDeleteClick}>Delete</MenuItem>
       </IconMenu>
     );
@@ -63,19 +64,6 @@ class TodoItemComponent extends React.Component {
         rightIconButton={rightIconMenu}
       />
     );
-
-    // return (
-    //   <div>
-    //     <b>{id}</b>
-    //     <Checkbox label={text} checked={isCompleted} disabled />
-    //     <FABButton name colored ripple onClick={() => this.props.onStartUpdating(this.props.todo) } >
-    //       <Icon name='update' />
-    //     </FABButton>
-    //     <FABButton name colored ripple onClick={this.onDeleteClick} >
-    //       <Icon name='delete' />
-    //     </FABButton>
-    //   </div>
-    // );
   }
 }
 
