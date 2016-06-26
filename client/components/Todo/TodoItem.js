@@ -8,6 +8,23 @@ import RemoveTodoMutation from './../../mutations/RemoveTodoMutation'
 
 import { ListItem } from 'material-ui/List';
 import Checkbox from 'material-ui/Checkbox';
+import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
+import IconButton from 'material-ui/IconButton';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import IconMenu from 'material-ui/IconMenu';
+import MenuItem from 'material-ui/MenuItem';
+
+const iconButtonElement = (
+  <IconButton
+    touch={true}
+    tooltip="more"
+    tooltipPosition="bottom-left"
+  >
+    <MoreVertIcon color={grey400} />
+  </IconButton>
+);
+
+
 
 class TodoItemComponent extends React.Component {
   static propTypes = {
@@ -32,11 +49,18 @@ class TodoItemComponent extends React.Component {
   render() {
     const { id, text, isCompleted } = this.props.todo;
 
+    const rightIconMenu = (
+      <IconMenu iconButtonElement={iconButtonElement}>
+        <MenuItem onClick={this.onDeleteClick}>Delete</MenuItem>
+      </IconMenu>
+    );
+
     return (
       <ListItem
         leftCheckbox={<Checkbox checked={isCompleted} onClick={this.props.onToggleIsComplete} />}
         primaryText={text}
         secondaryText={id}
+        rightIconButton={rightIconMenu}
       />
     );
 

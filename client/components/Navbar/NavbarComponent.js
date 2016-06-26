@@ -1,27 +1,24 @@
 import React from 'react';
-import { Link } from 'react-router';
-import { Layout, Header, Navigation, Drawer } from 'react-mdl';
+import { browserHistory } from 'react-router';
 import styles from './Navbar.scss';
 
+// Material-UI
+import AppBar from 'material-ui/AppBar';
+import FlatButton from 'material-ui/FlatButton';
+
 export default class Navbar extends React.Component {
+  goTo = (path) => {
+    browserHistory.push(path);
+  };
+
   render() {
     const title = 'Relay Fullstack';
     return (
-      <Layout className={styles.root}>
-        <Header title={<Link to='/'>{title}</Link>} scroll>
-          <Navigation>
-            <Link to='/todos'>Todos</Link>
-            <Link to='/signup'>Sign up</Link>
-            <Link to='/login'>Login</Link>
-          </Navigation>
-        </Header>
-        <Drawer title={<Link to='/' style={{ fontSize: '1.5em' }}>{title}</Link>} className='mdl-layout--small-screen-only'>
-          <Navigation>
-            <Link to='/signup'>Sign up</Link>
-            <Link to='/login'>Login</Link>
-          </Navigation>
-        </Drawer>
-      </Layout>
+      <AppBar
+        title={<span style={styles.title}>{title}</span>}
+        iconElementRight={<FlatButton label="Main" onClick={e => this.goTo('/')} />}
+        iconElementRight={<FlatButton label="Todos" onClick={e => this.goTo('/todos')} />}
+      />
     );
   }
 }

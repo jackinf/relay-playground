@@ -5,7 +5,6 @@
 import React from 'react';
 import Relay from 'react-relay';
 import TodoItem from './TodoItem';
-import { Textfield } from 'react-mdl';
 
 // Material-UI
 import FloatingActionButton from 'material-ui/FloatingActionButton';
@@ -13,6 +12,7 @@ import { List } from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import ContentUpdate from 'material-ui/svg-icons/content/save';
+import TextField from 'material-ui/TextField';
 
 // Mutations
 import AddTodoMutation from './../../mutations/AddTodoMutation';
@@ -107,16 +107,16 @@ class TodoComponent extends React.Component {
       <div>
         <h2>{ this.state.isUpdating ? 'Updating existing task' : 'Add new todo task'}</h2>
 
-        <Textfield
+        <TextField
           onChange={ this.onTextChanged }
-          label={ this.state.todoLabel }
+          hintText={ this.state.todoLabel }
           value={ this.state.todoText }
           style={{ width: '200px' }}
         />
         {button}
 
         <div>
-          <List>
+          <List style={{ width: '500px', border: '1px solid #eee', background: '#efefef' }}>
             <Subheader>Todos</Subheader>
             {this.renderTodos()}
           </List>

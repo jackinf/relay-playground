@@ -13,8 +13,7 @@ export default class ChangeTodoStatusMutation extends Relay.Mutation {
     `,
     viewer: () => Relay.QL`
       fragment on User {
-        id,
-        todos
+        id
       }
     `
   };
@@ -48,16 +47,16 @@ export default class ChangeTodoStatusMutation extends Relay.Mutation {
 
   getVariables() {
     return {
-      id: this.props.id,
-      complete: this.props.complete
+      complete: this.props.complete,
+      id: this.props.todo.id
     };
   }
 
   getOptimisticResponse() {
     return {
       todo: {
-        id: this.props.todo.id,
-        complete: this.props.todo.complete
+        complete: this.props.complete,
+        id: this.props.todo.id
       },
       viewer: {
         id: this.props.viewer.id
