@@ -16,7 +16,8 @@ import TextField from 'material-ui/TextField';
 
 // Mutations
 import AddTodoMutation from './../../mutations/AddTodoMutation';
-import RenameTodoMutation from "../../mutations/RenameTodoMutation";
+import RenameTodoMutation from "./../../mutations/RenameTodoMutation";
+import RemoveTodoMutation from './../../mutations/RemoveTodoMutation';
 import ChangeTodoStatusMutation from "../../mutations/ChangeTodoStatusMutation";
 
 /**
@@ -51,7 +52,6 @@ class TodoComponent extends React.Component {
   };
 
   onStartUpdating = (todo) => {
-    console.log(todo);
     this.setState({ isUpdating: true, todoText: todo.text, updatedTodo: todo });
   };
 
@@ -63,34 +63,31 @@ class TodoComponent extends React.Component {
   };
 
   onToggleIsComplete = (e, node) => {
-    console.log(node);
     this.props.relay.commitUpdate(
-      new ChangeTodoStatusMutation({
-        id: node.id,
-        complete: node.complete,
-        todo: node,
-        viewer: this.props.viewer
-      })
+      new ChangeTodoStatusMutation({ complete: !node.complete, todo: node, viewer: this.props.viewer })
     );
-    // console.log(node);
-    // node.isComplete = !node.isComplete;
   };
 
-  renderTodos = () => {
-    return this.props.viewer.todos.edges.map((edge) => {
+  onDeleteClick = (todo) => {
+    this.props.relay.commitUpdate(
+      new RemoveTodoMutation({ todo, text: todo.text, viewer: this.props.viewer })
+    )
+  };
+
+  render() {
+
+    var todosBlock = this.props.viewer.todos.edges.map((edge) => {
       return (
         <TodoItem
           key={edge.node.id}
-          todo={edge.node}
-          viewer={this.props.viewer}
+          todo1={edge.node}
           onStartUpdating={this.onStartUpdating}
+          onDeleteClick={this.onDeleteClick}
           onToggleIsComplete={e => this.onToggleIsComplete(e, edge.node)}
         />
       );
     });
-  };
 
-  render() {
     var addButton = (
       <FloatingActionButton onClick={this.addTodoClicked}>
         <ContentAdd />
@@ -118,7 +115,7 @@ class TodoComponent extends React.Component {
         <div>
           <List style={{ width: '500px', border: '1px solid #eee', background: '#efefef' }}>
             <Subheader>Todos</Subheader>
-            {this.renderTodos()}
+            {todosBlock}
           </List>
         </div>
       </div>
@@ -128,15 +125,6 @@ class TodoComponent extends React.Component {
 
 export default Relay.createContainer(TodoComponent, {
     fragments: {
-        todo: () => Relay.QL`
-          fragment on Todo {
-              id,
-              complete,
-              text,
-              ${RenameTodoMutation.getFragment('todo')},
-              ${ChangeTodoStatusMutation.getFragment('todo')}
-          }  
-        `,
         viewer: () => Relay.QL`
             fragment on User {
                 todos(first: 10) {
@@ -149,7 +137,8 @@ export default Relay.createContainer(TodoComponent, {
                     }
                 },
                 ${AddTodoMutation.getFragment('viewer')},
-                ${ChangeTodoStatusMutation.getFragment('viewer')}
+                ${ChangeTodoStatusMutation.getFragment('viewer')},
+                ${RemoveTodoMutation.getFragment('viewer')}
             }
         `
     }

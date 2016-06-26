@@ -6,11 +6,11 @@ import Relay from 'react-relay';
 
 export default class ChangeTodoStatusMutation extends Relay.Mutation {
   static fragments = {
-    todo: () => Relay.QL`
-      fragment on Todo {
-        id
-      }  
-    `,
+    // todo: () => Relay.QL`
+    //   fragment on Todo {
+    //     id
+    //   }
+    // `,
     viewer: () => Relay.QL`
       fragment on User {
         id

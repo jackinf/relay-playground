@@ -27,38 +27,20 @@ const iconButtonElement = (
 
 
 class TodoItemComponent extends React.Component {
-  static propTypes = {
-    todo: React.PropTypes.object
-  };
-
-  static getInitialState = function () {
-    console.log('getInitialState');
-    return this.props;
-  };
-
-  onUpdateClick = () => {
-    console.log(this.props.todo.id);
-  };
-
-  onDeleteClick = () => {
-    this.props.relay.commitUpdate(
-      new RemoveTodoMutation({ todo: this.props.todo, text: this.props.text, viewer: this.props.viewer })
-    )
-  };
 
   render() {
-    const { id, text, isCompleted } = this.props.todo;
+    const { id, text, complete } = this.props.todo1;
 
     const rightIconMenu = (
       <IconMenu iconButtonElement={iconButtonElement}>
-        <MenuItem onClick={() => this.props.onStartUpdating(this.props.todo) }>Update</MenuItem>
-        <MenuItem onClick={this.onDeleteClick}>Delete</MenuItem>
+        <MenuItem onClick={() => this.props.onStartUpdating(this.props.todo1) }>Update</MenuItem>
+        <MenuItem onClick={() => this.props.onDeleteClick(this.props.todo1)}>Delete</MenuItem>
       </IconMenu>
     );
 
     return (
       <ListItem
-        leftCheckbox={<Checkbox checked={isCompleted} onClick={this.props.onToggleIsComplete} />}
+        leftCheckbox={<Checkbox checked={complete} onClick={this.props.onToggleIsComplete} />}
         primaryText={text}
         secondaryText={id}
         rightIconButton={rightIconMenu}
@@ -67,20 +49,22 @@ class TodoItemComponent extends React.Component {
   }
 }
 
-export default Relay.createContainer(TodoItemComponent, {
-  fragments: {
-    todo: () => Relay.QL`
-      fragment on Todo {
-        complete,
-        id,
-        text,
-        ${RemoveTodoMutation.getFragment('todo')}
-      }
-    `,
-    viewer: () => Relay.QL`
-      fragment on User {
-        ${RemoveTodoMutation.getFragment('todo')}
-      }
-    `
-  }
-});
+export default TodoItemComponent;
+
+// export default Relay.createContainer(TodoItemComponent, {
+//   fragments: {
+//     todo: () => Relay.QL`
+//       fragment on Todo {
+//         complete,
+//         id,
+//         text,
+//         ${RemoveTodoMutation.getFragment('todo')}
+//       }
+//     `,
+//     viewer: () => Relay.QL`
+//       fragment on User {
+//         ${RemoveTodoMutation.getFragment('viewer')}
+//       }
+//     `
+//   }
+// });

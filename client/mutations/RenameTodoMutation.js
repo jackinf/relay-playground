@@ -5,13 +5,13 @@
 import Relay from 'react-relay';
 
 export default class RenameTodoMutaton extends Relay.Mutation {
-  static fragments = {
-    todo: () => Relay.QL`
-      fragment on Todo {
-        id
-      }
-    `
-  };
+  // static fragments = {
+  //   viewer: () => Relay.QL`
+  //     fragment on User {
+  //       id
+  //     }
+  //   `
+  // };
 
   getMutation() {
     return Relay.QL`mutation{renameTodo}`;
